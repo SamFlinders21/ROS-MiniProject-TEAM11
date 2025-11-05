@@ -14,24 +14,8 @@ class JointPublisher(Node):
     def __init__(self):
         super().__init__('joint_limits_node')
         
-        # Request user input for start/end angles
-        start_deg1 = float(input("Input starting angle for joint 1: "))
-        end_deg1 = float(input("Input ending angle for joint 1: "))
-        start_deg2 = float(input("Input starting angle for joint 2: "))
-        end_deg2 = float(input("Input ending angle for joint 2: "))
-        
-        # Define the starting angles
-        self.j1_start = math.radians(start_deg1) 
-        self.j2_start = math.radians(start_deg2)
-        
-        # Define the end angles
-        self.j1_end = math.radians(end_deg1)
-        self.j2_end = math.radians(end_deg2)
-        
-        # Define the range of the move
-        self.j1_range = self.j1_end - self.j1_start
-        self.j2_range = self.j2_end - self.j2_start
-        
+        self.user_input()
+                
         self.move_duration = 10 # How long the move should take
         
         # Create publisher on the joint_states topic
@@ -46,11 +30,34 @@ class JointPublisher(Node):
         self.start_time = self.get_clock().now()
         
         # Create log
-        self.get_logger().info('Move publisher started.')
-        self.get_logger().info(f'Moving J1: {self.j1_start} -> {self.j1_end} deg')
-        self.get_logger().info(f'Moving J2: {self.j2_start} -> {self.j2_end} deg')
+        # self.get_logger().info('Move publisher started.')
+        # self.get_logger().info(f'Moving J1: {self.j1_start} -> {self.j1_end} deg')
+        # self.get_logger().info(f'Moving J2: {self.j2_start} -> {self.j2_end} deg')
 
+
+    def user_input(self):
+        self.deg1_start = float(input("Input starting angle for joint 1: "))
+        self.deg1_end = float(input("Input ending angle for joint 1: "))
+        self.deg2_start = float(input("Input starting angle for joint 2: "))
+        self.deg2_end = float(input("Input ending angle for joint 2: "))
+    
+        # Define the starting angles
+        self.j1_start = math.radians(self.deg1_start) 
+        self.j2_start = math.radians(self.deg2_start)
         
+        # Define the end angles
+        self.j1_end = math.radians(self.deg1_end)
+        self.j2_end = math.radians(self.deg2_end)
+        
+        # Find the range of the joints
+        self.j1_range = self.j1_end - self.j1_start
+        self.j2_range = self.j2_end - self.j2_start
+        
+        # Create log
+        # self.get_logger().info('Move publisher started.')
+        # self.get_logger().info(f'Moving J1: {self.j1_start} -> {self.j1_end} deg')
+        # self.get_logger().info(f'Moving J2: {self.j2_start} -> {self.j2_end} deg')
+            
     def timer_callback(self):
         
         # Get current time
@@ -81,10 +88,9 @@ class JointPublisher(Node):
         # Stop if its done
         if progress >= 1.0:
             self.get_logger().info('Target Position reached')
+            self.user_input()
             self.timer.reset()
             self.start_time = self.get_clock().now()
-            
-
 
             
 def main(args=None):
