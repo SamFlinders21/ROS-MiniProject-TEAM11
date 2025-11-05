@@ -24,6 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'fk_node = mp2.fk_node:main',
+            'joint_publisher = mp2.joint_publisher:main',
         ],
     },
 )
