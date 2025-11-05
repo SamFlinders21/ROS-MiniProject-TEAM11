@@ -14,6 +14,8 @@ class JointPublisher(Node):
     def __init__(self):
         super().__init__('joint_limits_node')
         
+        self.progress = 0
+        
         self.user_input()
                 
         self.move_duration = 10 # How long the move should take
@@ -36,10 +38,17 @@ class JointPublisher(Node):
 
 
     def user_input(self):
-        self.deg1_start = float(input("Input starting angle for joint 1: "))
-        self.deg1_end = float(input("Input ending angle for joint 1: "))
-        self.deg2_start = float(input("Input starting angle for joint 2: "))
-        self.deg2_end = float(input("Input ending angle for joint 2: "))
+        
+        if self.progress >= 1.0:
+            self.deg1_start = self.deg1_end
+            self.deg2_start = self.deg2_end
+            self.deg1_end = float(input("Input next position for joint 1 "))
+            self.deg2_end = float(input("Input next position for joint 2: "))
+        else:
+            self.deg1_start = float(input("Input starting angle for joint 1: "))
+            self.deg1_end = float(input("Input ending angle for joint 1: "))
+            self.deg2_start = float(input("Input starting angle for joint 2: "))
+            self.deg2_end = float(input("Input ending angle for joint 2: "))
     
         # Define the starting angles
         self.j1_start = math.radians(self.deg1_start) 
@@ -69,12 +78,12 @@ class JointPublisher(Node):
         # Calculate progress from 0.0 to 1.0
         # This will be used to smoothly move the joints over chosen duration
         # (there may be a better way to do this, but this is the best way I can think of)
-        progress = min(elapsed_time / self.move_duration, 1.0) # this uses min so it cannot go over 1.0
+        self.progress = min(elapsed_time / self.move_duration, 1.0) # this uses min so it cannot go over 1.0
         
         # Animation Logic
         
-        theta1 = self.j1_start + (self.j1_range * progress)
-        theta2 = self.j2_start + (self.j2_range * progress)
+        theta1 = self.j1_start + (self.j1_range * self.progress)
+        theta2 = self.j2_start + (self.j2_range * self.progress)
         
         # Create the message
         msg = JointState()
@@ -86,7 +95,7 @@ class JointPublisher(Node):
         self.publisher_.publish(msg)
         
         # Stop if its done
-        if progress >= 1.0:
+        if self.progress >= 1.0:
             self.get_logger().info('Target Position reached')
             self.user_input()
             self.timer.reset()

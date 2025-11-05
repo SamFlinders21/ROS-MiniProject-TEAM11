@@ -37,10 +37,6 @@ class FkCalculator(Node):
     # 'msg' is the JointState message data
     # 
     def joint_callback(self, msg):
-    
-        # Dr. Zia gives us deg, we need radians
-        # rad1 = msg.position[0] * (math.pi / 180)
-        # rad2 = msg.position[1] * (math.pi /180)
         
         rad1 = msg.position[0]
         rad2 = msg.position[1]
