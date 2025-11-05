@@ -18,7 +18,7 @@ class JointPublisher(Node):
         
         self.user_input()
                 
-        self.move_duration = 10 # How long the move should take
+        self.move_duration = 5 # How long the move should take
         
         # Create publisher on the joint_states topic
         self.publisher_ = self.create_publisher(JointState, 'joint_states',10)
