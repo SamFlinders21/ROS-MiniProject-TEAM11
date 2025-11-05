@@ -35,6 +35,7 @@ class FkCalculator(Node):
         
     # Create the callback function mentioned earlier
     # 'msg' is the JointState message data
+    # 
     def joint_callback(self, msg):
     
         # Dr. Zia gives us deg, we need radians
@@ -46,14 +47,18 @@ class FkCalculator(Node):
     
         # Calculate link 1 positions
         x1 = self.L1 * math.cos(rad1)
-        y1 = self.L1 * math.sin(rad2)
+        y1 = self.L1 * math.sin(rad1)
     
         # Calculate link 2 positions
-        x2 = self.L2 * math.cos(rad1 + rad2)
-        y2 = self.L2 * math.cos(rad1 + rad2)
+        x2 = x1 + self.L2 * math.cos(rad1 + rad2)
+        y2 = y1 + self.L2 * math.sin(rad1 + rad2)
+        
+        # Converting into degrees to make the terminal more readable
+        deg1 = math.degrees(rad1)
+        deg2 = math.degrees(rad2)
         
         # Print the result to the terminal
-        self.get_logger().info(f"Angles: [t1={rad1:.2f}, t2={rad2:.2f}] End Effector Position: [x={x2:.2f}, y={x2:.2f}]")
+        self.get_logger().info(f"Angles: [t1={deg1:.2f}, t2={deg2:.2f}] End Effector Position: [x={x2:.2f}, y={x2:.2f}]")
         
         # Publish the result
         output_msg = Point()
