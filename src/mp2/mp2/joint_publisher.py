@@ -4,17 +4,29 @@ from sensor_msgs.msg import JointState
 import math
 
 # Create a node that will publish the joint states 
+# References: 
+# Python library: https://docs.python.org/3/library/functions.html 
+# ROS2 Humble documentation: 
+# RVIZ User Guide: https://docs.ros.org/en/humble/Tutorials/Intermediate/RViz/RViz-User-Guide/RViz-User-Guide.html
+
+# 
 class JointPublisher(Node):
     def __init__(self):
         super().__init__('joint_limits_node')
         
+        # Request user input for start/end angles
+        start_deg1 = float(input("Input starting angle for joint 1: "))
+        end_deg1 = float(input("Input ending angle for joint 1: "))
+        start_deg2 = float(input("Input starting angle for joint 2: "))
+        end_deg2 = float(input("Input ending angle for joint 2: "))
+        
         # Define the starting angles
-        self.j1_start = math.radians(90) 
-        self.j2_start = math.radians(45)
+        self.j1_start = math.radians(start_deg1) 
+        self.j2_start = math.radians(start_deg2)
         
         # Define the end angles
-        self.j1_end = math.radians(360)
-        self.j2_end = math.radians(180)
+        self.j1_end = math.radians(end_deg1)
+        self.j2_end = math.radians(end_deg2)
         
         # Define the range of the move
         self.j1_range = self.j1_end - self.j1_start
@@ -35,8 +47,8 @@ class JointPublisher(Node):
         
         # Create log
         self.get_logger().info('Move publisher started.')
-        self.get_logger().info(f'Moving J1: {self.j1_start} -> {self.j1_end} rad')
-        self.get_logger().info(f'Moving J2: {self.j2_start} -> {self.j2_end} rad')
+        self.get_logger().info(f'Moving J1: {self.j1_start} -> {self.j1_end} deg')
+        self.get_logger().info(f'Moving J2: {self.j2_start} -> {self.j2_end} deg')
 
         
     def timer_callback(self):
