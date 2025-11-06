@@ -39,8 +39,11 @@ class FkCalculator(Node):
         # Make a publisher that will publish on the /ee_position topic
         self.position_publisher_ = self.create_publisher(Point,'ee_position', 10)
         
+        self.marker_publisher_ = self.create_publisher(Marker, 'base_marker', 10)
+        
         # Make a node that publish a Marker message for RViz
         self.marker_publisher_ = self.create_publisher(Marker, 'arm_marker',10)
+        
         
     # Create the callback function mentioned earlier
     # 'msg' is the JointState message data
@@ -162,6 +165,36 @@ class FkCalculator(Node):
         marker.points = [p_origin, p_elbow, p_hand] 
         
         self.marker_publisher_.publish(marker)
+    
+    # Create a fancy smancy base marker to make the document a little easier to read
+    def publish_base_marker(self):
+        marker = Marker()
+        marker.header.frame_id = "world"
+        
+        marker.id = 1
+        marker.type = Marker.CUBE
+        marker.action = Marker.ADD
+        
+        # Place the cube marker at the origin
+        marker.pose.position.x = 0.
+        marker.pose.position.y = 0.
+        marker.pose.position.z = -0.1
+        
+        # Scale the cube
+        marker.scale.x = .15
+        marker.scale.y = .15
+        marker.scale.z = 0.01
+        
+        marker.color.a = 0. # Make the center cube black
+        marker.color.b = 0.
+        marker.color.g = 0.
+        marker.color.r = 1.
+        
+        self.marker_publisher_.publish(marker)
+        
+        
+        
+        
        
 def main(args=None):
     rclpy.init(args=args)
