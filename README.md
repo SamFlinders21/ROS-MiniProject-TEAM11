@@ -62,6 +62,16 @@ Now that you have ROS 2, you can download and build our project.
     # (You should still be in the ~/ros2mp folder)
     colcon build
     ```
+5. **Optional: Adjust Shell Startup Script for Ease of Use**
+   To avoid constantly having to run:
+   ```bash
+        source /opt/ros/humble/setup.bash
+   ```
+   Edit your startup script by typing:
+   ```bash
+        nano ~/.bashrc
+   ```
+   Once in this file go ahead and use your arrow keys to navigate to the bottom where you are going to add: source /opt/ros/humble/setup.bash
 
 ## 3. How to Run The Project
 
