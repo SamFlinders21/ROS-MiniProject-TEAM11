@@ -18,13 +18,13 @@ class JointPublisher(Node):
         
         self.user_input()
                 
-        self.move_duration = 5 # How long the move should take
+        self.move_duration = 10 # How long the move should take
         
         # Create publisher on the joint_states topic
         self.publisher_ = self.create_publisher(JointState, 'joint_states',10)
         
         # Define clock parameters
-        UPS = 60 # How many times the joint angles should be updated per second
+        UPS = 120 # How many times the joint angles should be updated per second
         timer_period = 1 / UPS
         self.timer = self.create_timer(timer_period, self.timer_callback)
         

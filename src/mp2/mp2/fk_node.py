@@ -27,6 +27,9 @@ class FkCalculator(Node):
             10
         )
         
+        self.ee_path = []
+        self.elbow_path = []
+        
         self.elbow_path_marker_id = 0
         self.ee_path_marker_id = 0
 
@@ -70,39 +73,56 @@ class FkCalculator(Node):
         
         self.position_publisher_.publish(output_msg)
         
+        # Log each point that the end effector is at
+        ee_point = Point()
+        ee_point.x = x2
+        ee_point.y = y2
+        
+        self.ee_path.append(ee_point)
+        
+        # Log each point that the elbow is at
+        elbow_point = Point()
+        elbow_point.x = x1
+        elbow_point.y = y1
+        
+        self.elbow_path.append(elbow_point)
+        
         self.publish_arm_marker(x1,y1,x2,y2)
         self.publish_paths(x1,y1,x2,y2)
         
         
     ## Path section
+    ## https://wiki.ros.org/rviz/DisplayTypes/Marker
     def publish_paths(self,x1,y1,x2,y2):
         elbow_marker = Marker()
         elbow_marker.header.frame_id = "world"
         elbow_marker.id = self.elbow_path_marker_id
-        elbow_marker.type = Marker.SPHERE
-        elbow_marker.pose.position.x = x1
-        elbow_marker.pose.position.y = y1
-        elbow_marker.scale.x = .05
-        elbow_marker.scale.y = .05
+        elbow_marker.type = Marker.LINE_STRIP
+        # elbow_marker.pose.position.x = x1
+        # elbow_marker.pose.position.y = y1
+        elbow_marker.points = self.elbow_path
+        elbow_marker.scale.x = .03
+        elbow_marker.scale.y = .03
         elbow_marker.color.r = 1.0
         elbow_marker.color.a = 1.0
         
         self.elbow_path_pub_.publish(elbow_marker)
-        self.elbow_path_marker_id += 1
+        # self.elbow_path_marker_id += 1
         
         ee_marker = Marker()
         ee_marker.header.frame_id = "world"
         ee_marker.id = self.ee_path_marker_id
-        ee_marker.type = Marker.SPHERE
-        ee_marker.pose.position.x = x2
-        ee_marker.pose.position.y = y2
-        ee_marker.scale.x = .02
-        ee_marker.scale.y = .02
+        ee_marker.type = Marker.LINE_STRIP
+        # ee_marker.pose.position.x = x2
+        # ee_marker.pose.position.y = y2
+        ee_marker.points = self.ee_path
+        ee_marker.scale.x = .03
+        ee_marker.scale.y = .03
         ee_marker.color.g = 1.0
         ee_marker.color.a = 1.0
         
         self.ee_path_pub_.publish(ee_marker)
-        self.ee_path_marker_id += 1
+        # self.ee_path_marker_id += 1
         
     # Create function to create and publish the arm marker
     def publish_arm_marker(self,x1,y1,x2,y2):
